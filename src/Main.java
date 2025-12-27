@@ -188,6 +188,19 @@ class Table_users {
             throw new NonExistentUserException("Запрашивается несуществующий пользователь");
         }
     }
+
+    public User getUserByName(String name) throws NonExistentUserException {
+        try {
+            for (User u : users){
+                if (name.equals(u.getName())) {
+                    return u;
+                }
+            }
+            throw new NonExistentUserException("Запрашивается несуществующий пользователь");
+        } catch (IndexOutOfBoundsException e) {
+            throw new NonExistentUserException("Запрашивается несуществующий пользователь");
+        }
+    }
 }
 
 class Table_plays {
@@ -252,9 +265,14 @@ class Table_plays {
         return plays.size();
     }
 
-    public void newPlay(String uWin, String uLose) {
+    public void newPlay(String uWin, String uLose, Table_users users) throws NonExistentUserException {
         int id = countPlays();
         plays.add(new Play(id, uWin, uLose));
+
+        User user1=users.getUserByName(uWin);
+        user1.userWin();
+        User user2=users.getUserByName(uLose);
+        user2.userLose();
     }
 }
 
@@ -543,6 +561,7 @@ import java.util.Scanner;*/
 }
 */
 
+
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 void main() {
@@ -557,23 +576,42 @@ void main() {
     }*/
 
     try {
-        /*Path filePath = Paths.get("users.txt");
-        try {
-            Files.createFile(filePath); // Создает файл, если он не существует
-            System.out.println("Файл создан: " + filePath.toAbsolutePath());
-        } catch (IOException e) {
-            // Если файл уже существует, будет брошено FileAlreadyExistsException
-            // Если есть другие проблемы с доступом
-            //System.err.println("Ошибка при создании файла: " + e.getMessage());
-            ;
-        }*/
+        Table_users users = new Table_users("users.txt");
+        Table_plays plays = new Table_plays("plays.txt");
 
-        // Работа с пользователями
-        /*Table_users users = new Table_users("users.txt");
+        System.out.println("=== СТАРТ ИГРЫ ===");
 
+        // Создаем игроков
+        users.newUser("Alice");
+        users.newUser("Bob");
+
+        System.out.println("\nИгроки:");
         users.out();
 
-        //users.newUser("Sara");
+        // Создаем игры (статистика обновляется автоматически!)
+        plays.newPlay("Alice", "Bob", users);
+        plays.newPlay("Bob", "Alice", users);
+        plays.newPlay("Alice", "Bob", users);
+
+        System.out.println("\nФинальная статистика:");
+        users.out();
+        System.out.println("\nИстория игр:");
+        plays.outPlays();
+
+
+
+    } catch (Exception e) {
+        System.out.println("❌ Ошибка: " + e.getMessage());
+    }
+
+    /*try {
+        // Работа с пользователями
+        Table_users users = new Table_users("users.txt");
+
+        System.out.println("\nСодержмое файла users.txt:");
+        users.out();
+
+        users.newUser("Sara");
 
         System.out.println("\nПосле добавления пользователей:");
         users.out();
@@ -589,15 +627,11 @@ void main() {
         System.out.println("\nПосле добавления игры:");
         plays.outPlays();
 
-        */
-
-
-
-        users.rewrightFile();
-        plays.rewrightFile();
+        //users.rewrightFile();
+        //plays.rewrightFile();
 
     } catch (Exception e) {
         System.out.println("Ошибка: " + e.getMessage());
-    }
+    }*/
 
 }
