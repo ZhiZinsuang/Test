@@ -28,6 +28,8 @@ void main() {
         System.out.println("\nИстория игр:");
         plays.outPlays();
 
+        System.out.println("\nВсего создано пользователей: " + User.getTotalUsersCreated());
+
     } catch (Exception e) {
         System.out.println("❌ Ошибка: " + e.getMessage());
     }
