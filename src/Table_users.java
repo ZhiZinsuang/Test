@@ -69,6 +69,13 @@ class Table_users {
         users.add(new User(name, countUsers()));
     }
 
+    public void newAdvancedUser(String name, String role) throws ExistingUserException {
+        if (duplicateName(name)) {
+            throw new ExistingUserException("User had already created");
+        }
+        users.add(new AdvancedUser(name, users.size(), role));
+    }
+
     public int countUsers() {
         return users.size();
     }
